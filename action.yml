@@ -1,0 +1,32 @@
+name: 'Cache assets action'
+description: 'Cache precompile assets'
+inputs:
+  key:
+    description: 'Cache key name'
+    required: false
+    default: assets-cache-${{ runner.os }}-${{ github.ref }}
+  path:
+    description: 'A list of files, directories, and wildcard patterns to cache and restore'
+    required: false
+    default: |
+      public/packs-test
+      tmp/webpacker-cache
+
+runs:
+  using: "composite"
+  steps:
+    - name: Asset cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ inputs.path }}
+        key: asset-cache-${{ runner.os }}-${{ inputs.key }}
+    - name: Precompile assets
+      shell: "bash"
+      run: |
+        if [[ -d "spec/decidim_dummy_app" ]]
+        then
+          cd "spec/decidim_dummy_app"
+          bundle exec rails assets:precompile
+        else
+          bundle exec rails assets:precompile
+        fi
