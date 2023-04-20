@@ -11,6 +11,8 @@ inputs:
     default: |
       public/packs-test
       tmp/webpacker-cache
+      spec/decidim_dummy_app/public/packs-test
+      spec/decidim_dummy_app/tmp/webpacker-cache
 
 runs:
   using: "composite"
@@ -19,7 +21,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ inputs.path }}
-        key: asset-cache-${{ runner.os }}-${{ inputs.key }}
+        key: ${{ inputs.key }}
     - name: Precompile assets
       shell: "bash"
       run: |
