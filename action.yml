@@ -17,8 +17,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Asset cache
-      uses: actions/cache@v3
+    - name: Restore cache
+      uses: actions/cache/restore@v3
+      id: restore-cache
       with:
         path: ${{ inputs.path }}
         key: ${{ inputs.key }}
@@ -32,3 +33,10 @@ runs:
         else
           bundle exec rails assets:precompile
         fi
+    - name: Save cache
+      uses: actions/cache/save@v3
+      # Always save cache, even if build failed
+      if: always()
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
